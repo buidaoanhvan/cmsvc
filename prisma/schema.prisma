@@ -1,0 +1,108 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model brand {
+  id      Int       @id @default(autoincrement())
+  name    String?   @db.VarChar(255)
+  logo    String?   @db.VarChar(255)
+  status  Int?
+  voucher voucher[]
+}
+
+model codex {
+  id         Int      @id @default(autoincrement())
+  voucher_id Int?
+  segment_id Int?
+  codex      String?  @db.VarChar(255)
+  is_used    Int?
+  phone      String?  @db.VarChar(255)
+  status     Int?
+  voucher    voucher? @relation(fields: [voucher_id], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "codex_ibfk_1")
+  segment    segment? @relation(fields: [segment_id], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "codex_ibfk_2")
+
+  @@index([segment_id], map: "segment_id")
+  @@index([voucher_id], map: "voucher_id")
+}
+
+model permissions {
+  id               Int                @id @default(autoincrement())
+  name             String?            @db.VarChar(255)
+  guard_name       String?            @db.VarChar(255)
+  role_permissions role_permissions[]
+}
+
+model role_permissions {
+  id            Int          @id @default(autoincrement())
+  role_id       Int?
+  permission_id Int?
+  roles         roles?       @relation(fields: [role_id], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "role_permissions_ibfk_1")
+  permissions   permissions? @relation(fields: [permission_id], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "role_permissions_ibfk_2")
+
+  @@index([permission_id], map: "permission_id")
+  @@index([role_id], map: "role_id")
+}
+
+model roles {
+  id               Int                @id @default(autoincrement())
+  name             String?            @db.VarChar(255)
+  guard_name       String?            @db.VarChar(255)
+  role_permissions role_permissions[]
+  user             user[]
+}
+
+model segment {
+  id     Int     @id @default(autoincrement())
+  name   String? @db.VarChar(255)
+  amount String? @db.VarChar(255)
+  status Int?
+  codex  codex[]
+}
+
+model supplier {
+  id      Int       @id @default(autoincrement())
+  name    String?   @db.VarChar(255)
+  email   String?   @db.VarChar(255)
+  phone   String?   @db.VarChar(255)
+  status  Int?
+  voucher voucher[]
+}
+
+model user {
+  id       Int     @id @default(autoincrement())
+  email    String? @db.VarChar(255)
+  password String? @db.VarChar(255)
+  fullname String? @db.VarChar(255)
+  phone    String? @db.VarChar(255)
+  status   Int?
+  role_id  Int?
+  roles    roles?  @relation(fields: [role_id], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "user_ibfk_1")
+
+  @@index([role_id], map: "role_id")
+}
+
+model voucher {
+  id             Int       @id @default(autoincrement())
+  brand_id       Int?
+  supplier_id    Int?
+  title          String?   @db.VarChar(255)
+  description    String?   @db.VarChar(255)
+  image          String?   @db.VarChar(255)
+  status         Int?
+  discount_value Int?
+  discount_type  Int?
+  max_discount   Int?
+  start_time     DateTime? @db.DateTime(0)
+  end_time       DateTime? @db.DateTime(0)
+  codex          codex[]
+  brand          brand?    @relation(fields: [brand_id], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "voucher_ibfk_1")
+  supplier       supplier? @relation(fields: [supplier_id], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "voucher_ibfk_2")
+
+  @@index([brand_id], map: "brand_id")
+  @@index([supplier_id], map: "supplier_id")
+}
