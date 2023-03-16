@@ -2,12 +2,13 @@ import { Injectable } from '@nestjs/common';
 import { LoginAuthDto } from './dto/login-auth.dto';
 import { RegisterAuthDto } from './dto/register-auth.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { JwtService } from '@nestjs/jwt';
 
 import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class AuthService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService, private jwtService: JwtService) {}
 
   async login(loginAuthDto: LoginAuthDto) {
     try {
@@ -22,10 +23,19 @@ export class AuthService {
           user.password,
         );
         if (loginAuthDto.email === user.email && passwordMatch) {
+          const payload = {
+            ui: user.id,
+            un: user.fullname,
+            up: user.phone,
+            ur: user.role_id,
+            ut: user.status,
+          };
+
           return {
             success: true,
             code: 200,
             message: 'Đăng nhập thành công',
+            access_token: this.jwtService.sign(payload),
           };
         } else {
           return {
