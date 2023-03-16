@@ -2,15 +2,19 @@ import { Injectable } from '@nestjs/common';
 import { CreateBrandDto } from './dto/create-brand.dto';
 import { UpdateBrandDto } from './dto/update-brand.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { Prisma } from '@prisma/client';
+
 
 @Injectable()
 export class BrandService {
 
   constructor(private prisma: PrismaService) { }
 
-  async create(createBrandDto: CreateBrandDto) {
-    return this.prisma.brand.create({data:createBrandDto});
+  async create(createBrandDto: CreateBrandDto): Promise<any> {
+
+    return this.prisma.brand.create({
+      data: createBrandDto
+    })
+
   }
 
   async findAll() {
@@ -23,11 +27,19 @@ export class BrandService {
     return `This action returns a #${id} brand`;
   }
 
-  update(id: number, updateBrandDto: UpdateBrandDto) {
-    return `This action updates a #${id} brand`;
+  async update(id: number, updateBrandDto: UpdateBrandDto) {
+    return this.prisma.brand.update({
+      where: { id },
+      data: updateBrandDto
+    })
   }
 
   remove(id: number) {
-    return `This action removes a #${id} brand`;
+    return this.prisma.brand.delete({
+      where: { id }
+    });
   }
+
+
+
 }
