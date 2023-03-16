@@ -6,7 +6,7 @@ import { join } from 'path';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  
+
   // public directory
   app.use(express.static(join(__dirname, '..', 'public')));
   // Serve the 'public' directory as a static directory

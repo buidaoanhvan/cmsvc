@@ -3,18 +3,14 @@ import { CreateBrandDto } from './dto/create-brand.dto';
 import { UpdateBrandDto } from './dto/update-brand.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 
-
 @Injectable()
 export class BrandService {
-
-  constructor(private prisma: PrismaService) { }
+  constructor(private prisma: PrismaService) {}
 
   async create(createBrandDto: CreateBrandDto): Promise<any> {
-
     return this.prisma.brand.create({
-      data: createBrandDto
-    })
-
+      data: createBrandDto,
+    });
   }
 
   async findAll() {
@@ -30,16 +26,13 @@ export class BrandService {
   async update(id: number, updateBrandDto: UpdateBrandDto) {
     return this.prisma.brand.update({
       where: { id },
-      data: updateBrandDto
-    })
+      data: updateBrandDto,
+    });
   }
 
   remove(id: number) {
     return this.prisma.brand.delete({
-      where: { id }
+      where: { id },
     });
   }
-
-
-
 }

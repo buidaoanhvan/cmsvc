@@ -5,11 +5,11 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { Prisma } from '@prisma/client';
 @Injectable()
 export class SupplierService {
-  constructor(private prisma:PrismaService){}
+  constructor(private prisma: PrismaService) {}
 
   async create(createSupplierDto: CreateSupplierDto) {
     return this.prisma.supplier.create({
-      data:createSupplierDto
+      data: createSupplierDto,
     });
   }
 
@@ -23,14 +23,14 @@ export class SupplierService {
 
   async update(id: number, updateSupplierDto: UpdateSupplierDto) {
     return this.prisma.supplier.update({
-      where: {id},
-      data: updateSupplierDto
+      where: { id },
+      data: updateSupplierDto,
     });
   }
 
   async remove(id: number) {
     return this.prisma.supplier.delete({
-      where: {id}
+      where: { id },
     });
   }
 }

@@ -6,6 +6,6 @@ import { UploadController } from './upload.controller';
 @Module({
   imports: [MulterModule.register({ dest: 'public/' })],
   controllers: [UploadController],
-  providers: [UploadService]
+  providers: [UploadService],
 })
 export class UploadModule {}
