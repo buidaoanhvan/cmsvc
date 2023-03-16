@@ -9,8 +9,8 @@ async function bootstrap() {
   
   // public directory
   app.use(express.static(join(__dirname, '..', 'public')));
-  // Serve the 'uploads' directory as a static directory
-  app.use('/uploads', express.static(join(__dirname, '..', 'uploads')));
+  // Serve the 'public' directory as a static directory
+  app.use('/public', express.static(join(__dirname, '..', 'public')));
 
   app.useGlobalPipes(new ValidationPipe());
   await app.listen(3000);

@@ -1,4 +1,13 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete,UploadedFile, UseInterceptors } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseInterceptors,
+} from '@nestjs/common';
 import { BrandService } from './brand.service';
 import { CreateBrandDto } from './dto/create-brand.dto';
 import { UpdateBrandDto } from './dto/update-brand.dto';
@@ -10,9 +19,8 @@ export class BrandController {
 
   @Post()
   @UseInterceptors(FileInterceptor('file'))
-  create( @Body() createBrandDto: CreateBrandDto, 
-          @UploadedFile() file: Express.Multer.File): Promise<any> {
-    return this.brandService.create(createBrandDto, file);
+  create(@Body() createBrandDto: CreateBrandDto) {
+    return this.brandService.create(createBrandDto);
   }
 
   @Get()
