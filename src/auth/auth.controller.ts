@@ -3,7 +3,7 @@ import { AuthService } from './auth.service';
 import { LoginAuthDto } from './dto/login-auth.dto';
 import { RegisterAuthDto } from './dto/register-auth.dto';
 import { ApiResponse } from 'src/interfaces/api-response.interface';
-import { JwtAuthGuard } from './jwt-auth.guard';
+import { Public } from './public.decorator';
 import { PermissionsGuard } from './permissions.guard';
 import { HasPermissions } from './has-permissions.decorator';
 
@@ -11,13 +11,14 @@ import { HasPermissions } from './has-permissions.decorator';
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
+  @Public()
   @Post('login')
   login(@Body() loginAuthDto: LoginAuthDto) {
     return this.authService.login(loginAuthDto);
   }
 
   @HasPermissions('P_REGISTER')
-  @UseGuards(JwtAuthGuard, PermissionsGuard)
+  @UseGuards(PermissionsGuard)
   @Post('register')
   async register(
     @Body() registerAuthDto: RegisterAuthDto,

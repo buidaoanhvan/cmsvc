@@ -11,29 +11,34 @@ export class PermissionsGuard implements CanActivate {
       'permissions',
       [context.getHandler(), context.getClass()],
     );
+
     const { user } = await context.switchToHttp().getRequest();
 
-    //Kiểm tra có phải ADMIN không
-    const admin = await this.prisma.roles.findFirst({ where: { id: user.ur } });
-    if (admin.guard_name === 'ADMIN') {
-      return true;
-    }
-
-    //Lấy ra quyền USER
-    const permissions = await this.prisma.role_permissions.findMany({
-      where: { role_id: user.ur },
-      select: {
-        permissions: {
-          select: {
-            guard_name: true,
+    if (user.ur) {
+      //Kiểm tra có phải ADMIN không
+      const admin = await this.prisma.roles.findFirst({
+        where: { id: user.ur },
+      });
+      if (admin.guard_name === 'ADMIN') {
+        return true;
+      }
+      //Lấy ra quyền USER
+      const permissions = await this.prisma.role_permissions.findMany({
+        where: { role_id: user.ur },
+        select: {
+          permissions: {
+            select: {
+              guard_name: true,
+            },
           },
         },
-      },
-    });
-
-    //Kiểm tra quyền
-    return permissions.some((per) =>
-      per.permissions?.guard_name?.includes(requiredPermissions),
-    );
+      });
+      //Kiểm tra quyền
+      return permissions.some((per) =>
+        per.permissions?.guard_name?.includes(requiredPermissions),
+      );
+    } else {
+      return false;
+    }
   }
 }
