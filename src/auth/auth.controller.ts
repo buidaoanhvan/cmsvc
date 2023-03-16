@@ -4,6 +4,8 @@ import { LoginAuthDto } from './dto/login-auth.dto';
 import { RegisterAuthDto } from './dto/register-auth.dto';
 import { ApiResponse } from 'src/interfaces/api-response.interface';
 import { JwtAuthGuard } from './jwt-auth.guard';
+import { PermissionsGuard } from './permissions.guard';
+import { HasPermissions } from './has-permissions.decorator';
 
 @Controller('auth')
 export class AuthController {
@@ -14,7 +16,8 @@ export class AuthController {
     return this.authService.login(loginAuthDto);
   }
 
-  @UseGuards(JwtAuthGuard)
+  @HasPermissions('P_REGISTER')
+  @UseGuards(JwtAuthGuard, PermissionsGuard)
   @Post('register')
   async register(
     @Body() registerAuthDto: RegisterAuthDto,
