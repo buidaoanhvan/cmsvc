@@ -11,7 +11,6 @@ export class AuthService {
   constructor(private prisma: PrismaService, private jwtService: JwtService) {}
 
   async login(loginAuthDto: LoginAuthDto) {
-    console.log(loginAuthDto);
     try {
       const user = await this.prisma.user.findFirst({
         where: {
@@ -101,6 +100,25 @@ export class AuthService {
         code: 500,
         message: 'Lỗi hệ thống vui lòng thử lại sau',
         data: null,
+      };
+    }
+  }
+
+  async user(id: any) {
+    const user = await this.prisma.user.findFirst({ where: { id: id } });
+    delete user.password;
+    if (user) {
+      return {
+        success: true,
+        code: 200,
+        message: 'Người dùng',
+        data: user,
+      };
+    } else {
+      return {
+        success: false,
+        code: 400,
+        message: 'Không tìm thấy người dùng',
       };
     }
   }

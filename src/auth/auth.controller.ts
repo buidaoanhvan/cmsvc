@@ -1,4 +1,4 @@
-import { Controller, Post, Body, UseGuards } from '@nestjs/common';
+import { Controller, Post, Body, UseGuards, Req } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoginAuthDto } from './dto/login-auth.dto';
 import { RegisterAuthDto } from './dto/register-auth.dto';
@@ -38,6 +38,23 @@ export class AuthController {
     @Body() registerAuthDto: RegisterAuthDto,
   ): Promise<ApiResponse<any>> {
     const result = await this.authService.register(registerAuthDto);
+    if (result.success) {
+      return {
+        code: result.code,
+        message: result.message,
+        data: result.data,
+      };
+    } else {
+      return {
+        code: result.code,
+        message: result.message,
+      };
+    }
+  }
+
+  @Post('user')
+  async user(@Req() req: any) {
+    const result = await this.authService.user(req.user.id);
     if (result.success) {
       return {
         code: result.code,
