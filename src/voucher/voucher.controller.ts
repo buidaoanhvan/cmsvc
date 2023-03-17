@@ -1,32 +1,19 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-  UseGuards,
-} from '@nestjs/common';
-import { RolePermissionsService } from './role_permissions.service';
-import { CreateRolePermissionDto } from './dto/create-role_permission.dto';
-import { UpdateRolePermissionDto } from './dto/update-role_permission.dto';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import { VoucherService } from './voucher.service';
+import { CreateVoucherDto } from './dto/create-voucher.dto';
+import { UpdateVoucherDto } from './dto/update-voucher.dto';
 import { HasPermissions } from 'src/auth/has-permissions.decorator';
 import { PermissionsGuard } from 'src/auth/permissions.guard';
 
-@Controller('role-permissions')
-export class RolePermissionsController {
-  constructor(
-    private readonly rolePermissionsService: RolePermissionsService,
-  ) { }
+@Controller('voucher')
+export class VoucherController {
+  constructor(private readonly voucherService: VoucherService) { }
 
   @Post()
   @HasPermissions('P_REGISTER')
   @UseGuards(PermissionsGuard)
-  async create(@Body() createRolePermissionDto: CreateRolePermissionDto) {
-    const result = await this.rolePermissionsService.create(
-      createRolePermissionDto,
-    );
+  async create(@Body() createVoucherDto: CreateVoucherDto) {
+    const result = await this.voucherService.create(createVoucherDto);
     if (result.success) {
       return {
         statusCode: result.code,
@@ -43,7 +30,7 @@ export class RolePermissionsController {
 
   @Get()
   async findAll() {
-    const result = await this.rolePermissionsService.findAll();
+    const result = await this.voucherService.findAll();
     if (result.success) {
       return {
         statusCode: result.code,
@@ -60,20 +47,14 @@ export class RolePermissionsController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.rolePermissionsService.findOne(+id);
+    return this.voucherService.findOne(+id);
   }
 
   @Patch(':id')
   @HasPermissions('P_REGISTER')
   @UseGuards(PermissionsGuard)
-  async update(
-    @Param('id') id: string,
-    @Body() updateRolePermissionDto: UpdateRolePermissionDto,
-  ) {
-    const result = await this.rolePermissionsService.update(
-      +id,
-      updateRolePermissionDto,
-    );
+  async update(@Param('id') id: number, @Body() updateVoucherDto: UpdateVoucherDto) {
+    const result = await this.voucherService.update(+id, updateVoucherDto);
     if (result.success) {
       return {
         statusCode: result.code,
@@ -91,12 +72,13 @@ export class RolePermissionsController {
   @Delete(':id')
   @HasPermissions('P_REGISTER')
   @UseGuards(PermissionsGuard)
-  async remove(@Param('id') id: string) {
-    const result = await this.rolePermissionsService.remove(+id);
+  async remove(@Param('id') id: number) {
+    const result = await this.voucherService.remove(+id);
     if (result.success) {
       return {
         statusCode: result.code,
         message: result.message,
+
       };
     } else {
       return {

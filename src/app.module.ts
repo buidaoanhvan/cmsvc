@@ -13,6 +13,8 @@ import { SegmentModule } from './segment/segment.module';
 import { RolesModule } from './roles/roles.module';
 import { PermissionsModule } from './permissions/permissions.module';
 import { RolePermissionsModule } from './role_permissions/role_permissions.module';
+import { CodexModule } from './codex/codex.module';
+import { VoucherModule } from './voucher/voucher.module';
 
 @Module({
   imports: [
@@ -26,6 +28,8 @@ import { RolePermissionsModule } from './role_permissions/role_permissions.modul
     RolesModule,
     PermissionsModule,
     RolePermissionsModule,
+    CodexModule,
+    VoucherModule,
   ],
   controllers: [AppController],
   providers: [
