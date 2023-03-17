@@ -11,6 +11,7 @@ export class AuthService {
   constructor(private prisma: PrismaService, private jwtService: JwtService) {}
 
   async login(loginAuthDto: LoginAuthDto) {
+    console.log(loginAuthDto);
     try {
       const user = await this.prisma.user.findFirst({
         where: {
@@ -40,7 +41,7 @@ export class AuthService {
         } else {
           return {
             success: false,
-            code: 403,
+            code: 400,
             message: 'Tài khoản và mật khẩu không đúng.',
           };
         }

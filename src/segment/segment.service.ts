@@ -1,91 +1,91 @@
 import { Injectable } from '@nestjs/common';
-import { CreateBrandDto } from './dto/create-brand.dto';
-import { UpdateBrandDto } from './dto/update-brand.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { CreateSegmentDto } from './dto/create-segment.dto';
+import { UpdateSegmentDto } from './dto/update-segment.dto';
 
 @Injectable()
-export class BrandService {
+export class SegmentService {
   constructor(private prisma: PrismaService) {}
 
-  async create(createBrandDto: CreateBrandDto) {
-    const result = await this.prisma.brand.create({
-      data: createBrandDto,
+  async create(createSegmentDto: CreateSegmentDto) {
+    const result = await this.prisma.segment.create({
+      data: createSegmentDto,
     });
     if (result) {
       return {
         success: true,
         code: 200,
-        message: 'Thêm brand thành công!',
+        message: 'Thêm segment thành công!',
         data: result,
       };
     } else {
       return {
         success: false,
         code: 400,
-        message: 'Thêm brand không thành công!',
+        message: 'Thêm segment không thành công!',
       };
     }
   }
 
   async findAll() {
-    const result = await this.prisma.brand.findMany();
+    const result = await this.prisma.segment.findMany({});
     if (result) {
       return {
         success: true,
         code: 200,
-        message: 'Thành công!',
+        message: 'Hiển thị segment thành công!',
         data: result,
       };
     } else {
       return {
         success: false,
         code: 400,
-        message: 'Không thành công!',
+        message: 'Hiển thị segemnt không thành công!',
       };
     }
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} brand`;
+    return `This action returns a #${id} segment`;
   }
 
-  async update(id: number, updateBrandDto: UpdateBrandDto) {
-    const result = await this.prisma.brand.update({
+  async update(id: number, updateSegmentDto: UpdateSegmentDto) {
+    const result = await this.prisma.segment.update({
       where: { id },
-      data: updateBrandDto,
+      data: updateSegmentDto,
     });
     if (result) {
       return {
         success: true,
         code: 200,
-        message: 'Sửa brand thành công!',
+        message: 'Sửa segment thành công!',
         data: result,
       };
     } else {
       return {
         success: false,
         code: 400,
-        message: 'Sửa brand không thành công!',
+        message: 'Sửa segemnt không thành công!',
       };
     }
   }
 
   async remove(id: number) {
-    const result = await this.prisma.brand.delete({
+    const result = await this.prisma.segment.delete({
       where: { id },
     });
     if (result) {
       return {
         success: true,
         code: 200,
-        message: 'xóa brand thành công!',
+        message: 'Xóa segment thành công!',
         data: result,
       };
     } else {
       return {
         success: false,
         code: 400,
-        message: 'Xóa brand không thành công!',
+        message: 'Xóa segment không thành công!',
       };
     }
   }

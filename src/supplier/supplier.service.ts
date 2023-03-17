@@ -2,19 +2,47 @@ import { Injectable } from '@nestjs/common';
 import { CreateSupplierDto } from './dto/create-supplier.dto';
 import { UpdateSupplierDto } from './dto/update-supplier.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { Prisma } from '@prisma/client';
+
 @Injectable()
 export class SupplierService {
   constructor(private prisma: PrismaService) {}
 
   async create(createSupplierDto: CreateSupplierDto) {
-    return this.prisma.supplier.create({
+    const result = await this.prisma.supplier.create({
       data: createSupplierDto,
     });
+    if (result) {
+      return {
+        success: true,
+        code: 200,
+        message: 'Thêm supplier thành công!',
+        data: result,
+      };
+    } else {
+      return {
+        success: false,
+        code: 400,
+        message: 'Thêm supplier không thành công!',
+      };
+    }
   }
 
   async findAll() {
-    return this.prisma.supplier.findMany();
+    const result = await this.prisma.supplier.findMany();
+    if (result) {
+      return {
+        success: true,
+        code: 200,
+        message: 'Thành công!',
+        data: result,
+      };
+    } else {
+      return {
+        success: false,
+        code: 400,
+        message: 'Không thành công!',
+      };
+    }
   }
 
   findOne(id: number) {
@@ -22,15 +50,43 @@ export class SupplierService {
   }
 
   async update(id: number, updateSupplierDto: UpdateSupplierDto) {
-    return this.prisma.supplier.update({
+    const result = await this.prisma.supplier.update({
       where: { id },
       data: updateSupplierDto,
     });
+    if (result) {
+      return {
+        success: true,
+        code: 200,
+        message: 'Sửa supplier thành công!',
+        data: result,
+      };
+    } else {
+      return {
+        success: false,
+        code: 400,
+        message: 'Sửa supplier không thành công!',
+      };
+    }
   }
 
   async remove(id: number) {
-    return this.prisma.supplier.delete({
+    const result = this.prisma.supplier.delete({
       where: { id },
     });
+    if (result) {
+      return {
+        success: true,
+        code: 200,
+        message: 'Xóa supplier thành công!',
+        data: result,
+      };
+    } else {
+      return {
+        success: false,
+        code: 400,
+        message: 'Xóa supplier không thành công!',
+      };
+    }
   }
 }

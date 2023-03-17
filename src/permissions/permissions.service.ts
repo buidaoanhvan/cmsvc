@@ -1,34 +1,34 @@
 import { Injectable } from '@nestjs/common';
-import { CreateBrandDto } from './dto/create-brand.dto';
-import { UpdateBrandDto } from './dto/update-brand.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { CreatePermissionDto } from './dto/create-permission.dto';
+import { UpdatePermissionDto } from './dto/update-permission.dto';
 
 @Injectable()
-export class BrandService {
+export class PermissionsService {
   constructor(private prisma: PrismaService) {}
 
-  async create(createBrandDto: CreateBrandDto) {
-    const result = await this.prisma.brand.create({
-      data: createBrandDto,
+  async create(createPermissionDto: CreatePermissionDto) {
+    const result = await this.prisma.permissions.create({
+      data: createPermissionDto,
     });
     if (result) {
       return {
         success: true,
         code: 200,
-        message: 'Thêm brand thành công!',
+        message: 'Thêm Permission thành công!',
         data: result,
       };
     } else {
       return {
         success: false,
         code: 400,
-        message: 'Thêm brand không thành công!',
+        message: 'Thêm Permission không thành công!',
       };
     }
   }
 
   async findAll() {
-    const result = await this.prisma.brand.findMany();
+    const result = await this.prisma.permissions.findMany({});
     if (result) {
       return {
         success: true,
@@ -46,46 +46,45 @@ export class BrandService {
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} brand`;
+    return `This action returns a #${id} permission`;
   }
 
-  async update(id: number, updateBrandDto: UpdateBrandDto) {
-    const result = await this.prisma.brand.update({
+  async update(id: number, updatePermissionDto: UpdatePermissionDto) {
+    const result = await this.prisma.permissions.update({
       where: { id },
-      data: updateBrandDto,
+      data: updatePermissionDto,
     });
     if (result) {
       return {
         success: true,
         code: 200,
-        message: 'Sửa brand thành công!',
+        message: 'Sửa Permission thành công!',
         data: result,
       };
     } else {
       return {
         success: false,
         code: 400,
-        message: 'Sửa brand không thành công!',
+        message: 'Sửa Permission không thành công!',
       };
     }
   }
 
   async remove(id: number) {
-    const result = await this.prisma.brand.delete({
+    const result = await this.prisma.permissions.delete({
       where: { id },
     });
     if (result) {
       return {
         success: true,
         code: 200,
-        message: 'xóa brand thành công!',
-        data: result,
+        message: 'Xóa permissions thành công!',
       };
     } else {
       return {
         success: false,
         code: 400,
-        message: 'Xóa brand không thành công!',
+        message: 'Xóa permissions không thành công!',
       };
     }
   }

@@ -6,24 +6,23 @@ import {
   Patch,
   Param,
   Delete,
-  UseInterceptors,
   UseGuards,
 } from '@nestjs/common';
-import { BrandService } from './brand.service';
-import { CreateBrandDto } from './dto/create-brand.dto';
-import { UpdateBrandDto } from './dto/update-brand.dto';
+import { SegmentService } from './segment.service';
+import { CreateSegmentDto } from './dto/create-segment.dto';
+import { UpdateSegmentDto } from './dto/update-segment.dto';
 import { HasPermissions } from 'src/auth/has-permissions.decorator';
 import { PermissionsGuard } from 'src/auth/permissions.guard';
 
-@Controller('brand')
-export class BrandController {
-  constructor(private readonly brandService: BrandService) {}
+@Controller('segment')
+export class SegmentController {
+  constructor(private readonly segmentService: SegmentService) {}
 
   @Post()
   @HasPermissions('P_REGISTER')
   @UseGuards(PermissionsGuard)
-  async create(@Body() createBrandDto: CreateBrandDto) {
-    const result = await this.brandService.create(createBrandDto);
+  async create(@Body() createSegmentDto: CreateSegmentDto) {
+    const result = await this.segmentService.create(createSegmentDto);
     if (result.success) {
       return {
         statusCode: result.code,
@@ -40,7 +39,7 @@ export class BrandController {
 
   @Get()
   async findAll() {
-    const result = await this.brandService.findAll();
+    const result = await this.segmentService.findAll();
     if (result.success) {
       return {
         statusCode: result.code,
@@ -57,7 +56,7 @@ export class BrandController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.brandService.findOne(+id);
+    return this.segmentService.findOne(+id);
   }
 
   @Patch(':id')
@@ -65,9 +64,9 @@ export class BrandController {
   @UseGuards(PermissionsGuard)
   async update(
     @Param('id') id: number,
-    @Body() updateBrandDto: UpdateBrandDto,
+    @Body() updateSegmentDto: UpdateSegmentDto,
   ) {
-    const result = await this.brandService.update(+id, updateBrandDto);
+    const result = await this.segmentService.update(+id, updateSegmentDto);
     if (result.success) {
       return {
         statusCode: result.code,
@@ -86,12 +85,11 @@ export class BrandController {
   @HasPermissions('P_REGISTER')
   @UseGuards(PermissionsGuard)
   async remove(@Param('id') id: number) {
-    const result = await this.brandService.remove(+id);
+    const result = await this.segmentService.remove(+id);
     if (result.success) {
       return {
         statusCode: result.code,
         message: result.message,
-        data: result.data,
       };
     } else {
       return {

@@ -11,8 +11,11 @@ async function bootstrap() {
   app.use(express.static(join(__dirname, '..', 'public')));
   // Serve the 'public' directory as a static directory
   app.use('/public', express.static(join(__dirname, '..', 'public')));
+  // fix cors
+  app.enableCors();
 
   app.useGlobalPipes(new ValidationPipe());
   await app.listen(3000);
 }
+
 bootstrap();

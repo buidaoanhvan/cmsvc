@@ -13,8 +13,22 @@ export class AuthController {
 
   @Public()
   @Post('login')
-  login(@Body() loginAuthDto: LoginAuthDto) {
-    return this.authService.login(loginAuthDto);
+  async login(@Body() loginAuthDto: LoginAuthDto) {
+    console.log(Body);
+    const result = await this.authService.login(loginAuthDto);
+
+    if (result.success) {
+      return {
+        code: result.code,
+        message: result.message,
+        accessToken: result.access_token,
+      };
+    } else {
+      return {
+        code: result.code,
+        message: result.message,
+      };
+    }
   }
 
   @HasPermissions('P_REGISTER')
@@ -26,13 +40,13 @@ export class AuthController {
     const result = await this.authService.register(registerAuthDto);
     if (result.success) {
       return {
-        statusCode: result.code,
+        code: result.code,
         message: result.message,
         data: result.data,
       };
     } else {
       return {
-        statusCode: result.code,
+        code: result.code,
         message: result.message,
       };
     }

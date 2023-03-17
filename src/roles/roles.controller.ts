@@ -6,24 +6,23 @@ import {
   Patch,
   Param,
   Delete,
-  UseInterceptors,
   UseGuards,
 } from '@nestjs/common';
-import { BrandService } from './brand.service';
-import { CreateBrandDto } from './dto/create-brand.dto';
-import { UpdateBrandDto } from './dto/update-brand.dto';
+import { RolesService } from './roles.service';
+import { CreateRoleDto } from './dto/create-role.dto';
+import { UpdateRoleDto } from './dto/update-role.dto';
 import { HasPermissions } from 'src/auth/has-permissions.decorator';
 import { PermissionsGuard } from 'src/auth/permissions.guard';
 
-@Controller('brand')
-export class BrandController {
-  constructor(private readonly brandService: BrandService) {}
+@Controller('roles')
+export class RolesController {
+  constructor(private readonly rolesService: RolesService) {}
 
   @Post()
   @HasPermissions('P_REGISTER')
   @UseGuards(PermissionsGuard)
-  async create(@Body() createBrandDto: CreateBrandDto) {
-    const result = await this.brandService.create(createBrandDto);
+  async create(@Body() createRoleDto: CreateRoleDto) {
+    const result = await this.rolesService.create(createRoleDto);
     if (result.success) {
       return {
         statusCode: result.code,
@@ -40,7 +39,7 @@ export class BrandController {
 
   @Get()
   async findAll() {
-    const result = await this.brandService.findAll();
+    const result = await this.rolesService.findAll();
     if (result.success) {
       return {
         statusCode: result.code,
@@ -57,17 +56,14 @@ export class BrandController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.brandService.findOne(+id);
+    return this.rolesService.findOne(+id);
   }
 
   @Patch(':id')
   @HasPermissions('P_REGISTER')
   @UseGuards(PermissionsGuard)
-  async update(
-    @Param('id') id: number,
-    @Body() updateBrandDto: UpdateBrandDto,
-  ) {
-    const result = await this.brandService.update(+id, updateBrandDto);
+  async update(@Param('id') id: string, @Body() updateRoleDto: UpdateRoleDto) {
+    const result = await this.rolesService.update(+id, updateRoleDto);
     if (result.success) {
       return {
         statusCode: result.code,
@@ -82,16 +78,15 @@ export class BrandController {
     }
   }
 
-  @Delete(':id')
   @HasPermissions('P_REGISTER')
   @UseGuards(PermissionsGuard)
+  @Delete(':id')
   async remove(@Param('id') id: number) {
-    const result = await this.brandService.remove(+id);
+    const result = await this.rolesService.remove(+id);
     if (result.success) {
       return {
         statusCode: result.code,
         message: result.message,
-        data: result.data,
       };
     } else {
       return {

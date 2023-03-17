@@ -9,6 +9,11 @@ import { SupplierModule } from './supplier/supplier.module';
 import { UploadModule } from './upload/upload.module';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtAuthGuard } from './auth/jwt-auth.guard';
+import { SegmentModule } from './segment/segment.module';
+import { RolesModule } from './roles/roles.module';
+import { PermissionsModule } from './permissions/permissions.module';
+import { RolePermissionsModule } from './role_permissions/role_permissions.module';
+
 @Module({
   imports: [
     PrismaModule,
@@ -17,6 +22,10 @@ import { JwtAuthGuard } from './auth/jwt-auth.guard';
     UploadModule,
     AuthModule,
     ConfigModule.forRoot(),
+    SegmentModule,
+    RolesModule,
+    PermissionsModule,
+    RolePermissionsModule,
   ],
   controllers: [AppController],
   providers: [
