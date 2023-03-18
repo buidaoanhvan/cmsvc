@@ -1,14 +1,11 @@
-import { IsNumber, IsNotEmpty, IsUrl } from 'class-validator';
+import { IsNotEmpty } from 'class-validator';
 
 export class CreateBrandDto {
   @IsNotEmpty()
   name: string;
 
   @IsNotEmpty()
-  @IsUrl()
   logo: string;
 
-  @IsNotEmpty()
-  @IsNumber()
   status: number;
 }
