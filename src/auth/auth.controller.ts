@@ -4,8 +4,8 @@ import { LoginAuthDto } from './dto/login-auth.dto';
 import { RegisterAuthDto } from './dto/register-auth.dto';
 import { ApiResponse } from 'src/interfaces/api-response.interface';
 import { Public } from './public.decorator';
-import { PermissionsGuard } from './permissions.guard';
-import { HasPermissions } from './has-permissions.decorator';
+// import { PermissionsGuard } from './permissions.guard';
+// import { HasPermissions } from './has-permissions.decorator';
 
 @Controller('auth')
 export class AuthController {
@@ -14,13 +14,13 @@ export class AuthController {
   @Public()
   @Post('login')
   async login(@Body() loginAuthDto: LoginAuthDto) {
-    console.log(Body);
     const result = await this.authService.login(loginAuthDto);
 
     if (result.success) {
       return {
         code: result.code,
         message: result.message,
+        user: result.user,
         accessToken: result.access_token,
       };
     } else {
@@ -31,8 +31,8 @@ export class AuthController {
     }
   }
 
-  @HasPermissions('P_REGISTER')
-  @UseGuards(PermissionsGuard)
+  // @HasPermissions('P_REGISTER')
+  // @UseGuards(PermissionsGuard)
   @Post('register')
   async register(
     @Body() registerAuthDto: RegisterAuthDto,

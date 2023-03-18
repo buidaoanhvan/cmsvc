@@ -17,6 +17,7 @@ export class AuthService {
           email: loginAuthDto.email,
         },
       });
+
       if (user) {
         const passwordMatch = await bcrypt.compare(
           loginAuthDto.password,
@@ -31,10 +32,13 @@ export class AuthService {
             ut: user.status,
           };
 
+          delete user.password;
+
           return {
             success: true,
             code: 200,
             message: 'Đăng nhập thành công',
+            user: user,
             access_token: this.jwtService.sign(payload),
           };
         } else {
