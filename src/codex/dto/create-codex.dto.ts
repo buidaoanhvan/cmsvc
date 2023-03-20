@@ -1,10 +1,10 @@
 import { IsNotEmpty } from "class-validator";
 
 export class CreateCodexDto {
-    @IsNotEmpty()
+  //  @IsNotEmpty()
     voucherId: number;
 
-    @IsNotEmpty()
+ //   @IsNotEmpty()
     segmentId: number;
 
     @IsNotEmpty()

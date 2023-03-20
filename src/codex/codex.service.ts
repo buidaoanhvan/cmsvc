@@ -5,6 +5,7 @@ import { UpdateCodexDto } from './dto/update-codex.dto';
 
 @Injectable()
 export class CodexService {
+  [x: string]: any;
   constructor(private prisma: PrismaService) { }
 
   async create(createCodexDto: CreateCodexDto) {
@@ -104,4 +105,24 @@ export class CodexService {
       };
     }
   }
+
+  async createCodex(codex: string, is_used: number, phone: string,status: number ) {
+    return this.prisma.codex.create({
+      data: {
+        codex,
+        is_used,      
+        phone,
+        status,
+      },
+    });
+  }
+
+  async importCodexFromExcel(rows: any[]) {
+    for (const row of rows) {
+      await this.createCodex(row['codex'], row['is_used'],row['phone'],row['status']);
+    }
+  }
+
+
 }
+
