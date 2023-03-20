@@ -8,6 +8,7 @@ export class BrandService {
   constructor(private prisma: PrismaService) {}
 
   async create(createBrandDto: CreateBrandDto) {
+    createBrandDto.status = 1;
     const result = await this.prisma.brand.create({
       data: createBrandDto,
     });
@@ -28,7 +29,13 @@ export class BrandService {
   }
 
   async findAll() {
-    const result = await this.prisma.brand.findMany();
+    const result = await this.prisma.brand.findMany({
+      orderBy: [
+        {
+          id: 'desc',
+        },
+      ],
+    });
     if (result) {
       return {
         success: true,

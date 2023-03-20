@@ -6,7 +6,6 @@ import {
   Patch,
   Param,
   Delete,
-  UseInterceptors,
   UseGuards,
 } from '@nestjs/common';
 import { BrandService } from './brand.service';

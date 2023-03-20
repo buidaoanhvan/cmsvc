@@ -11,13 +11,13 @@ export class AuthService {
   constructor(private prisma: PrismaService, private jwtService: JwtService) {}
 
   async login(loginAuthDto: LoginAuthDto) {
-    console.log(loginAuthDto);
     try {
       const user = await this.prisma.user.findFirst({
         where: {
           email: loginAuthDto.email,
         },
       });
+
       if (user) {
         const passwordMatch = await bcrypt.compare(
           loginAuthDto.password,
@@ -32,10 +32,13 @@ export class AuthService {
             ut: user.status,
           };
 
+          delete user.password;
+
           return {
             success: true,
             code: 200,
             message: 'Đăng nhập thành công',
+            user: user,
             access_token: this.jwtService.sign(payload),
           };
         } else {
@@ -101,6 +104,25 @@ export class AuthService {
         code: 500,
         message: 'Lỗi hệ thống vui lòng thử lại sau',
         data: null,
+      };
+    }
+  }
+
+  async user(id: any) {
+    const user = await this.prisma.user.findFirst({ where: { id: id } });
+    delete user.password;
+    if (user) {
+      return {
+        success: true,
+        code: 200,
+        message: 'Người dùng',
+        data: user,
+      };
+    } else {
+      return {
+        success: false,
+        code: 400,
+        message: 'Không tìm thấy người dùng',
       };
     }
   }
