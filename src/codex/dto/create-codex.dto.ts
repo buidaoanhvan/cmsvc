@@ -7,15 +7,15 @@ export class CreateCodexDto {
  //   @IsNotEmpty()
     segmentId: number;
 
-    @IsNotEmpty()
+   
     codex: string;
 
-    @IsNotEmpty()
+   
     is_used: number;
 
-    @IsNotEmpty()
+  
     phone: string;
     
-    @IsNotEmpty()
+  
     status: number;
 }

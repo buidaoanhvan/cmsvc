@@ -82,7 +82,7 @@ export class CodexController {
       return {
         statusCode: result.code,
         message: result.message,
-      
+
       };
     } else {
       return {
@@ -93,15 +93,23 @@ export class CodexController {
   }
 
 
+
+  // TEST IMPORT 2
   @Post('import')
   @UseInterceptors(FileInterceptor('file'))
-  async importExcel(@UploadedFile() file: Express.Multer.File) {
-    const workbook = XLSX.read(file.buffer, { type: 'buffer' });
-    const worksheet = workbook.Sheets[workbook.SheetNames[0]];
-    const rows = XLSX.utils.sheet_to_json(worksheet);
+  async import(@UploadedFile() file: Express.Multer.File) {
+    try {
+      await this.codexService.import(file);
+      return {
+        statusCode: 200,
+        message: "codex impoprt thành công!",
+      };
+    } catch (error) {
+      return {
+        statusCode: 400,
+        message: error,
+      };
+    }
 
-    await this.codexService.importCodexFromExcel(rows);
-
-    return { message: 'Codex imported successfully.' };
   }
 }

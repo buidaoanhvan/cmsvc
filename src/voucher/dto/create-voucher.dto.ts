@@ -3,10 +3,10 @@ import { IsDate, IsDateString, IsNotEmpty, IsNumber, IsString } from "class-vali
 import moment from "moment";
 
 export class CreateVoucherDto {
-    @IsNotEmpty()
+  
     brandId: number;
 
-    @IsNotEmpty()
+ 
     supplierId: number;
 
     @IsNotEmpty()

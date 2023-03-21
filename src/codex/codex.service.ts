@@ -2,10 +2,18 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateCodexDto } from './dto/create-codex.dto';
 import { UpdateCodexDto } from './dto/update-codex.dto';
+import * as XLSX from 'xlsx';
 
+
+interface ExcelRow {
+  codex: string;
+  is_used: number;
+  phone: string;
+  status: number;
+}
 @Injectable()
 export class CodexService {
-  [x: string]: any;
+  // [x: string]: any;
   constructor(private prisma: PrismaService) { }
 
   async create(createCodexDto: CreateCodexDto) {
@@ -16,7 +24,7 @@ export class CodexService {
     const result = await this.prisma.codex.create({
       data: {
         segment: { connect: { id: segmentId } },
-        voucher: { connect: { id: voucherId } },
+        voucher: { connect: { id: voucherId } },        
         codex, is_used, phone, status
       }
     });
@@ -63,7 +71,7 @@ export class CodexService {
       phone, status } = updateCodexDto;
 
     const result = await this.prisma.codex.update({
-      where:{id},
+      where: { id },
       data: {
         segment: { connect: { id: segmentId } },
         voucher: { connect: { id: voucherId } },
@@ -106,20 +114,31 @@ export class CodexService {
     }
   }
 
-  async createCodex(codex: string, is_used: number, phone: string,status: number ) {
-    return this.prisma.codex.create({
-      data: {
-        codex,
-        is_used,      
-        phone,
-        status,
-      },
-    });
-  }
 
-  async importCodexFromExcel(rows: any[]) {
-    for (const row of rows) {
-      await this.createCodex(row['codex'], row['is_used'],row['phone'],row['status']);
+
+  async import(file: Express.Multer.File) {
+    const workbook = XLSX.read(file.buffer, { type: 'buffer' });
+    const batchSize = 1000;
+
+    const sheet = workbook.Sheets[workbook.SheetNames[0]];
+    const rows: ExcelRow[] = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+
+    for (let i = 1; i < rows.length; i += batchSize) {
+      const batch = rows.slice(i, i + batchSize);
+      const data = batch.map((row) => {
+        // console.log(row[0], row.status, row.phone); // Log the values of codex, status, and phone to check if they are null
+
+        return {
+          codex: row[0] ,
+          is_used: row[1] ,       
+          status: row[2] ,
+        };
+      });
+
+      await this.prisma.codex.createMany({
+        data,
+        skipDuplicates: true,
+      });
     }
   }
 
