@@ -33,6 +33,7 @@ export class AuthController {
 
   // @HasPermissions('P_REGISTER')
   // @UseGuards(PermissionsGuard)
+  @Public()
   @Post('register')
   async register(
     @Body() registerAuthDto: RegisterAuthDto,
