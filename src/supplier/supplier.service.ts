@@ -8,6 +8,7 @@ export class SupplierService {
   constructor(private prisma: PrismaService) {}
 
   async create(createSupplierDto: CreateSupplierDto) {
+    createSupplierDto.status = 1;
     const result = await this.prisma.supplier.create({
       data: createSupplierDto,
     });
@@ -15,20 +16,26 @@ export class SupplierService {
       return {
         success: true,
         code: 200,
-        message: 'Thêm supplier thành công!',
+        message: 'Thêm đối tác thành công!',
         data: result,
       };
     } else {
       return {
         success: false,
         code: 400,
-        message: 'Thêm supplier không thành công!',
+        message: 'Thêm đối tác không thành công!',
       };
     }
   }
 
   async findAll() {
-    const result = await this.prisma.supplier.findMany();
+    const result = await this.prisma.supplier.findMany({
+      orderBy: [
+        {
+          id: 'desc',
+        },
+      ],
+    });
     if (result) {
       return {
         success: true,
@@ -71,7 +78,7 @@ export class SupplierService {
   }
 
   async remove(id: number) {
-    const result = this.prisma.supplier.delete({
+    const result = await this.prisma.supplier.delete({
       where: { id },
     });
     if (result) {

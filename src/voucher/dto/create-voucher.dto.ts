@@ -1,41 +1,37 @@
-import { Transform } from "class-transformer";
-import { IsDate, IsDateString, IsNotEmpty, IsNumber, IsString } from "class-validator";
-import moment from "moment";
+import { IsNotEmpty, IsNumber, IsDateString } from 'class-validator';
 
 export class CreateVoucherDto {
-  
-    brandId: number;
+  brandId: number;
 
- 
-    supplierId: number;
+  supplierId: number;
 
-    @IsNotEmpty()
-    title: string;
+  @IsNotEmpty()
+  title: string;
 
-    description: string;
+  description: string;
 
-    @IsNotEmpty()
-    image: string;
+  @IsNotEmpty()
+  image: string;
 
-    @IsNotEmpty()
-    status: number;
+  status: number;
 
-    @IsNotEmpty()
-    @IsNumber()
-    discount_value: number;
+  @IsNotEmpty()
+  @IsNumber()
+  discount_value: number;
 
-    @IsNotEmpty()
-    @IsNumber()
-    discount_type: number;
+  @IsNotEmpty()
+  @IsNumber()
+  discount_type: number;
 
-    @IsNotEmpty()
-    @IsNumber()
-    max_discount: number;
+  @IsNotEmpty()
+  @IsNumber()
+  max_discount: number;
 
+  @IsNotEmpty()
+  @IsDateString()
+  start_time: any;
 
-    @IsNotEmpty()
-    start_time: Date;
-
-    @IsNotEmpty()
-    end_time: Date;
+  @IsNotEmpty()
+  @IsDateString()
+  end_time: any;
 }

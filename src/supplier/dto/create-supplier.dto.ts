@@ -10,7 +10,5 @@ export class CreateSupplierDto {
   @IsNotEmpty()
   phone: string;
 
-  @IsNotEmpty()
-  @IsNumber()
   status: number;
 }
