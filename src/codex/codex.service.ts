@@ -2,14 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateCodexDto } from './dto/create-codex.dto';
 import { UpdateCodexDto } from './dto/update-codex.dto';
-import * as XLSX from 'xlsx';
-
-interface ExcelRow {
-  codex: string;
-  is_used: number;
-  phone: string;
-  status: number;
-}
+import * as fs from 'fs';
+import * as csv from 'fast-csv';
 @Injectable()
 export class CodexService {
   // [x: string]: any;
@@ -117,29 +111,22 @@ export class CodexService {
     }
   }
 
-  async import(file: Express.Multer.File) {
-    const workbook = XLSX.read(file.buffer, { type: 'buffer' });
-    const batchSize = 1000;
-
-    const sheet = workbook.Sheets[workbook.SheetNames[0]];
-    const rows: ExcelRow[] = XLSX.utils.sheet_to_json(sheet, { header: 1 });
-
-    for (let i = 1; i < rows.length; i += batchSize) {
-      const batch = rows.slice(i, i + batchSize);
-      const data = batch.map((row) => {
-        // console.log(row[0], row.status, row.phone); // Log the values of codex, status, and phone to check if they are null
-
-        return {
-          codex: row[0],
-          is_used: row[1],
-          status: row[2],
-        };
-      });
-
-      await this.prisma.codex.createMany({
-        data,
-        skipDuplicates: true,
-      });
-    }
+  async import(id: number, file: string) {
+    const csvData = [];
+    await new Promise((resolve, reject) => {
+      fs.createReadStream(file)
+        .pipe(csv.parse({ headers: true }))
+        .on('data', async (row) => {
+          row.voucher_id = id;
+          csvData.push(row);
+        })
+        .on('error', reject)
+        .on('end', resolve);
+    });
+    const countRow = await this.prisma.codex.createMany({
+      data: csvData,
+      skipDuplicates: true,
+    });
+    return countRow;
   }
 }

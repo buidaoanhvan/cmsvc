@@ -17,7 +17,8 @@ import { CodexService } from './codex.service';
 import { CreateCodexDto } from './dto/create-codex.dto';
 import { UpdateCodexDto } from './dto/update-codex.dto';
 import * as XLSX from 'xlsx';
-
+import { diskStorage } from 'multer';
+import { editFileName } from '../helper/index';
 @Controller('codex')
 export class CodexController {
   constructor(private readonly codexService: CodexService) {}
@@ -104,19 +105,29 @@ export class CodexController {
   }
 
   // TEST IMPORT 2
-  @Post('import')
-  @UseInterceptors(FileInterceptor('file'))
-  async import(@UploadedFile() file: Express.Multer.File) {
+  @Post('import/:id')
+  @UseInterceptors(
+    FileInterceptor('file', {
+      storage: diskStorage({
+        destination: './public/csv',
+        filename: editFileName,
+      }),
+    }),
+  )
+  async import(
+    @Param('id') id: number,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
     try {
-      await this.codexService.import(file);
+      const countRow = await this.codexService.import(+id, file.path);
       return {
         statusCode: 200,
-        message: 'codex impoprt thành công!',
+        message: 'thêm thành công ' + countRow.count + ' mã voucher.',
       };
     } catch (error) {
       return {
         statusCode: 400,
-        message: error,
+        message: 'Vui lòng thử lại sau',
       };
     }
   }
