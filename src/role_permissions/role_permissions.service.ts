@@ -5,7 +5,7 @@ import { UpdateRolePermissionDto } from './dto/update-role_permission.dto';
 
 @Injectable()
 export class RolePermissionsService {
-  constructor(private prisma: PrismaService) { }
+  constructor(private prisma: PrismaService) {}
 
   async create(createRolePermissionDto: CreateRolePermissionDto) {
     const { roleId, listPermission } = createRolePermissionDto;
@@ -28,7 +28,6 @@ export class RolePermissionsService {
       message: 'Thêm Role_Permission thành công!',
       data: result,
     };
-    
   }
 
   async findAll() {

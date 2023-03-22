@@ -1,21 +1,17 @@
-import { IsNotEmpty } from "class-validator";
+import { IsNotEmpty } from 'class-validator';
 
 export class CreateCodexDto {
   //  @IsNotEmpty()
-    voucherId: number;
+  voucherId: number;
 
- //   @IsNotEmpty()
-    segmentId: number;
+  //   @IsNotEmpty()
+  segmentId: number;
 
-   
-    codex: string;
+  codex: string;
 
-   
-    is_used: number;
+  is_used: number;
 
-  
-    phone: string;
-    
-  
-    status: number;
+  phone: string;
+
+  status: number;
 }

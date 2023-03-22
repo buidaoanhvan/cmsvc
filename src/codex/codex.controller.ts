@@ -1,4 +1,15 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, UploadedFile, UseInterceptors } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseGuards,
+  UploadedFile,
+  UseInterceptors,
+} from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { HasPermissions } from 'src/auth/has-permissions.decorator';
 import { PermissionsGuard } from 'src/auth/permissions.guard';
@@ -7,11 +18,9 @@ import { CreateCodexDto } from './dto/create-codex.dto';
 import { UpdateCodexDto } from './dto/update-codex.dto';
 import * as XLSX from 'xlsx';
 
-
-
 @Controller('codex')
 export class CodexController {
-  constructor(private readonly codexService: CodexService) { }
+  constructor(private readonly codexService: CodexService) {}
 
   @Post()
   @HasPermissions('P_REGISTER')
@@ -57,7 +66,10 @@ export class CodexController {
   @Patch(':id')
   @HasPermissions('P_REGISTER')
   @UseGuards(PermissionsGuard)
-  async update(@Param('id') id: string, @Body() updateCodexDto: UpdateCodexDto) {
+  async update(
+    @Param('id') id: string,
+    @Body() updateCodexDto: UpdateCodexDto,
+  ) {
     const result = await this.codexService.update(+id, updateCodexDto);
     if (result.success) {
       return {
@@ -82,7 +94,6 @@ export class CodexController {
       return {
         statusCode: result.code,
         message: result.message,
-
       };
     } else {
       return {
@@ -92,8 +103,6 @@ export class CodexController {
     }
   }
 
-
-
   // TEST IMPORT 2
   @Post('import')
   @UseInterceptors(FileInterceptor('file'))
@@ -102,7 +111,7 @@ export class CodexController {
       await this.codexService.import(file);
       return {
         statusCode: 200,
-        message: "codex impoprt thành công!",
+        message: 'codex impoprt thành công!',
       };
     } catch (error) {
       return {
@@ -110,6 +119,5 @@ export class CodexController {
         message: error,
       };
     }
-
   }
 }

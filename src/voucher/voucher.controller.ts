@@ -1,4 +1,13 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseGuards,
+} from '@nestjs/common';
 import { VoucherService } from './voucher.service';
 import { CreateVoucherDto } from './dto/create-voucher.dto';
 import { UpdateVoucherDto } from './dto/update-voucher.dto';
@@ -7,7 +16,7 @@ import { PermissionsGuard } from 'src/auth/permissions.guard';
 
 @Controller('voucher')
 export class VoucherController {
-  constructor(private readonly voucherService: VoucherService) { }
+  constructor(private readonly voucherService: VoucherService) {}
 
   @Post()
   @HasPermissions('P_REGISTER')
@@ -53,7 +62,10 @@ export class VoucherController {
   @Patch(':id')
   @HasPermissions('P_REGISTER')
   @UseGuards(PermissionsGuard)
-  async update(@Param('id') id: number, @Body() updateVoucherDto: UpdateVoucherDto) {
+  async update(
+    @Param('id') id: number,
+    @Body() updateVoucherDto: UpdateVoucherDto,
+  ) {
     const result = await this.voucherService.update(+id, updateVoucherDto);
     if (result.success) {
       return {
@@ -78,7 +90,6 @@ export class VoucherController {
       return {
         statusCode: result.code,
         message: result.message,
-
       };
     } else {
       return {

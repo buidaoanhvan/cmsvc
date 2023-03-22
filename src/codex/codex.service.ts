@@ -4,7 +4,6 @@ import { CreateCodexDto } from './dto/create-codex.dto';
 import { UpdateCodexDto } from './dto/update-codex.dto';
 import * as XLSX from 'xlsx';
 
-
 interface ExcelRow {
   codex: string;
   is_used: number;
@@ -14,19 +13,21 @@ interface ExcelRow {
 @Injectable()
 export class CodexService {
   // [x: string]: any;
-  constructor(private prisma: PrismaService) { }
+  constructor(private prisma: PrismaService) {}
 
   async create(createCodexDto: CreateCodexDto) {
-
-    const { voucherId, segmentId, codex, is_used,
-      phone, status } = createCodexDto;
+    const { voucherId, segmentId, codex, is_used, phone, status } =
+      createCodexDto;
 
     const result = await this.prisma.codex.create({
       data: {
         segment: { connect: { id: segmentId } },
-        voucher: { connect: { id: voucherId } },        
-        codex, is_used, phone, status
-      }
+        voucher: { connect: { id: voucherId } },
+        codex,
+        is_used,
+        phone,
+        status,
+      },
     });
     if (result) {
       return {
@@ -67,16 +68,19 @@ export class CodexService {
   }
 
   async update(id: number, updateCodexDto: UpdateCodexDto) {
-    const { voucherId, segmentId, codex, is_used,
-      phone, status } = updateCodexDto;
+    const { voucherId, segmentId, codex, is_used, phone, status } =
+      updateCodexDto;
 
     const result = await this.prisma.codex.update({
       where: { id },
       data: {
         segment: { connect: { id: segmentId } },
         voucher: { connect: { id: voucherId } },
-        codex, is_used, phone, status
-      }
+        codex,
+        is_used,
+        phone,
+        status,
+      },
     });
     if (result) {
       return {
@@ -103,7 +107,6 @@ export class CodexService {
         success: true,
         code: 200,
         message: 'xóa codex thành công!',
-
       };
     } else {
       return {
@@ -113,8 +116,6 @@ export class CodexService {
       };
     }
   }
-
-
 
   async import(file: Express.Multer.File) {
     const workbook = XLSX.read(file.buffer, { type: 'buffer' });
@@ -129,9 +130,9 @@ export class CodexService {
         // console.log(row[0], row.status, row.phone); // Log the values of codex, status, and phone to check if they are null
 
         return {
-          codex: row[0] ,
-          is_used: row[1] ,       
-          status: row[2] ,
+          codex: row[0],
+          is_used: row[1],
+          status: row[2],
         };
       });
 
@@ -141,7 +142,4 @@ export class CodexService {
       });
     }
   }
-
-
 }
-

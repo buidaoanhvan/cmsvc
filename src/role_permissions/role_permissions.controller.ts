@@ -18,7 +18,7 @@ import { PermissionsGuard } from 'src/auth/permissions.guard';
 export class RolePermissionsController {
   constructor(
     private readonly rolePermissionsService: RolePermissionsService,
-  ) { }
+  ) {}
 
   @Post()
   @HasPermissions('P_REGISTER')

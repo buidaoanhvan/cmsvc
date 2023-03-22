@@ -6,6 +6,6 @@ import { PrismaModule } from 'src/prisma/prisma.module';
 @Module({
   controllers: [CodexController],
   providers: [CodexService],
-  imports:[PrismaModule]
+  imports: [PrismaModule],
 })
 export class CodexModule {}

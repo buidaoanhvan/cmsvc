@@ -9,8 +9,8 @@ export class UploadService {
     const fileExt = extname(file.originalname);
     const fileName = `${uuidv4()}${fileExt}`;
     const filePath = join(__dirname, '../..', 'public', fileName);
-    // remove file 
-    const fileRm = join(__dirname, '../..',  file.path);
+    // remove file
+    const fileRm = join(__dirname, '../..', file.path);
     return new Promise((resolve, reject) => {
       const stream = createReadStream(file.path);
       const writeStream = createWriteStream(filePath);
@@ -23,13 +23,9 @@ export class UploadService {
         try {
           unlinkSync(fileRm);
         } catch (error) {
-          console.log("xóa file thất bại");
+          console.log('xóa file thất bại');
         }
-      
       });
-     
     });
-   
   }
 }
-
