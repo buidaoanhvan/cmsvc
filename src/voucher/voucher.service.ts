@@ -100,32 +100,11 @@ export class VoucherService {
   }
 
   async update(id: number, updateVoucherDto: UpdateVoucherDto) {
-    const {
-      brandId,
-      supplierId,
-      title,
-      description,
-      image,
-      status,
-      discount_value,
-      discount_type,
-      max_discount,
-      start_time,
-      end_time,
-    } = updateVoucherDto;
-
-    const parsedStartTime = new Date(
-      start_time.toString().split('/').reverse().join('/'),
-    );
-    const parsedEndTime = new Date(
-      end_time.toString().split('/').reverse().join('/'),
-    );
-
-    const result = await this.prisma.voucher.update({
-      where: { id },
-      data: {
-        brand: { connect: { id: brandId } },
-        supplier: { connect: { id: supplierId } },
+    try {
+      updateVoucherDto.status = 1;
+      const {
+        brandId,
+        supplierId,
         title,
         description,
         image,
@@ -133,23 +112,60 @@ export class VoucherService {
         discount_value,
         discount_type,
         max_discount,
-        start_time: parsedStartTime,
-        end_time: parsedEndTime,
-      },
-    });
-    if (result) {
-      return {
-        success: true,
-        code: 200,
-        message: 'Sửa voucher thành công!',
-        data: result,
-      };
-    } else {
-      return {
-        success: false,
-        code: 400,
-        message: 'Sửa voucher không thành công!',
-      };
+        start_time,
+        end_time,
+      } = updateVoucherDto;
+
+      const result = await this.prisma.voucher.update({
+        where: { id: id },
+        data: {
+          title,
+          description,
+          image,
+          status,
+          discount_type,
+          discount_value,
+          max_discount,
+          start_time,
+          end_time,
+          brand: brandId
+            ? { connect: { id: brandId } }
+            : { connect: undefined },
+          supplier: supplierId
+            ? { connect: { id: supplierId } }
+            : { connect: undefined },
+        },
+      });
+      if (result) {
+        return {
+          success: true,
+          code: 200,
+          message: 'Thêm voucher thành công!',
+          data: result,
+        };
+      } else {
+        return {
+          success: false,
+          code: 400,
+          message: 'Thêm voucher không thành công!',
+        };
+      }
+    } catch (error) {
+      switch (error.code) {
+        case 'P2025':
+          return {
+            success: false,
+            code: 400,
+            message: 'Đối tác thương hiệu không hợp lệ!',
+          };
+        default:
+          console.log(error);
+          return {
+            success: false,
+            code: 400,
+            message: 'Lỗi không xác định!',
+          };
+      }
     }
   }
 
