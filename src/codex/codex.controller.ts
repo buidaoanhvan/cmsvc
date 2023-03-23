@@ -16,7 +16,6 @@ import { PermissionsGuard } from 'src/auth/permissions.guard';
 import { CodexService } from './codex.service';
 import { CreateCodexDto } from './dto/create-codex.dto';
 import { UpdateCodexDto } from './dto/update-codex.dto';
-import * as XLSX from 'xlsx';
 import { diskStorage } from 'multer';
 import { editFileName } from '../helper/index';
 @Controller('codex')
