@@ -7,7 +7,6 @@ import {
   UseGuards,
   Request,
   StreamableFile,
-  Res,
 } from '@nestjs/common';
 import { SegmentService } from './segment.service';
 import { CreateSegmentDto } from './dto/create-segment.dto';
@@ -15,7 +14,6 @@ import { HasPermissions } from 'src/auth/has-permissions.decorator';
 import { PermissionsGuard } from 'src/auth/permissions.guard';
 import { join } from 'path';
 import { createReadStream } from 'fs';
-import type { Response } from 'express';
 @Controller('segment')
 export class SegmentController {
   constructor(private readonly segmentService: SegmentService) {}
