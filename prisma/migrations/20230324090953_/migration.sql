@@ -60,7 +60,7 @@ CREATE TABLE `roles` (
 CREATE TABLE `segment` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(255) NULL,
-    `amount` VARCHAR(255) NULL,
+    `amount` INTEGER NULL,
     `status` INTEGER NULL,
     `user_id` INTEGER NULL,
     `voucher_id` INTEGER NULL,

@@ -10,5 +10,5 @@ export class CreateSegmentDto {
   name: string;
 
   @IsNotEmpty()
-  amount: string;
+  amount: number;
 }

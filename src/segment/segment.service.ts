@@ -1,8 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateSegmentDto } from './dto/create-segment.dto';
-import { UpdateSegmentDto } from './dto/update-segment.dto';
-
 @Injectable()
 export class SegmentService {
   constructor(private prisma: PrismaService) {}
@@ -51,47 +49,124 @@ export class SegmentService {
     }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} segment`;
-  }
+  async getCsv(id: number, user_id: number) {
+    const result = await this.prisma.segment.findFirst({ where: { id } });
 
-  async update(id: number, updateSegmentDto: UpdateSegmentDto) {
-    const result = await this.prisma.segment.update({
-      where: { id },
-      data: updateSegmentDto,
-    });
-    if (result) {
+    if (result.status == 1 && result.user_id == user_id) {
+      const data = await this.prisma.codex.findMany({
+        where: { segment_id: result.id },
+        select: { codex: true },
+      });
       return {
         success: true,
         code: 200,
-        message: 'Sửa segment thành công!',
-        data: result,
+        message: 'Lấy dữ liệu thành công',
+        data: data,
+      };
+    } else if (result.status == 2) {
+      return {
+        success: false,
+        code: 400,
+        message: 'Yêu cầu bị từ chối!',
       };
     } else {
       return {
         success: false,
         code: 400,
-        message: 'Sửa segemnt không thành công!',
+        message: 'Yêu cầu chưa được duyệt!',
       };
     }
   }
 
-  async remove(id: number) {
-    const result = await this.prisma.segment.delete({
-      where: { id },
-    });
-    if (result) {
-      return {
-        success: true,
-        code: 200,
-        message: 'Xóa segment thành công!',
-        data: result,
-      };
-    } else {
+  async accept(id: number) {
+    try {
+      const segment = await this.prisma.segment.findFirst({
+        where: { id },
+      });
+
+      if (segment.status == 0) {
+        const countVoucher = await this.prisma.codex.findMany({
+          where: { voucher_id: segment.voucher_id, segment_id: null },
+          select: { id: true },
+          take: segment.amount,
+        });
+
+        if (segment.amount == countVoucher.length) {
+          for (let i = 0; i < countVoucher.length; i += 5000) {
+            const batch = countVoucher.slice(i, i + 5000);
+            const codexIds = batch.map((item) => item.id);
+            await this.prisma.codex.updateMany({
+              where: { id: { in: codexIds } },
+              data: { segment_id: segment.id },
+            });
+          }
+
+          await this.prisma.segment.update({
+            where: { id },
+            data: { status: 1 },
+          });
+
+          return {
+            success: true,
+            code: 200,
+            message: 'Cập nhật thành công!',
+          };
+        } else {
+          return {
+            success: false,
+            code: 400,
+            message: 'Số lượng voucher không đủ!',
+          };
+        }
+      } else if (segment.status == 2) {
+        return {
+          success: false,
+          code: 400,
+          message: 'Yêu cầu đã bị từ chối!',
+        };
+      } else {
+        return {
+          success: false,
+          code: 400,
+          message: 'Yêu cầu đã được duyệt!',
+        };
+      }
+    } catch (error) {
       return {
         success: false,
         code: 400,
-        message: 'Xóa segment không thành công!',
+        message: 'Không thành công!',
+      };
+    }
+  }
+
+  async deny(id: number) {
+    const segment = await this.prisma.segment.findFirst({
+      where: { id },
+    });
+
+    if (segment.status == 1) {
+      return {
+        success: false,
+        code: 400,
+        message: 'Yêu cầu đã được duyệt!',
+      };
+    } else if (segment.status == 2) {
+      return {
+        success: false,
+        code: 400,
+        message: 'Yêu cầu đã được từ chối!',
+      };
+    } else {
+      await this.prisma.segment.update({
+        where: { id },
+        data: { status: 2 },
+      });
+
+      return {
+        success: true,
+        code: 200,
+        message: 'Cập nhật thành công!',
       };
     }
   }
