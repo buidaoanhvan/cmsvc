@@ -4,6 +4,8 @@ CREATE TABLE `brand` (
     `name` VARCHAR(255) NULL,
     `logo` VARCHAR(255) NULL,
     `status` INTEGER NULL,
+    `created_at` DATETIME(3) NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updated_at` DATETIME(3) NULL,
 
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -17,6 +19,8 @@ CREATE TABLE `codex` (
     `is_used` INTEGER NULL,
     `phone` VARCHAR(255) NULL,
     `status` INTEGER NULL,
+    `created_at` DATETIME(3) NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updated_at` DATETIME(3) NULL,
 
     INDEX `segment_id`(`segment_id`),
     INDEX `voucher_id`(`voucher_id`),
@@ -58,7 +62,13 @@ CREATE TABLE `segment` (
     `name` VARCHAR(255) NULL,
     `amount` VARCHAR(255) NULL,
     `status` INTEGER NULL,
+    `user_id` INTEGER NULL,
+    `voucher_id` INTEGER NULL,
+    `created_at` DATETIME(3) NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updated_at` DATETIME(3) NULL,
 
+    INDEX `user_id`(`user_id`),
+    INDEX `voucher_id`(`voucher_id`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -69,6 +79,8 @@ CREATE TABLE `supplier` (
     `email` VARCHAR(255) NULL,
     `phone` VARCHAR(255) NULL,
     `status` INTEGER NULL,
+    `created_at` DATETIME(3) NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updated_at` DATETIME(3) NULL,
 
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -82,6 +94,8 @@ CREATE TABLE `user` (
     `phone` VARCHAR(255) NULL,
     `status` INTEGER NULL,
     `role_id` INTEGER NULL,
+    `created_at` DATETIME(3) NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updated_at` DATETIME(3) NULL,
 
     INDEX `role_id`(`role_id`),
     PRIMARY KEY (`id`)
@@ -101,6 +115,8 @@ CREATE TABLE `voucher` (
     `max_discount` INTEGER NULL,
     `start_time` DATETIME(0) NULL,
     `end_time` DATETIME(0) NULL,
+    `created_at` DATETIME(3) NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updated_at` DATETIME(3) NULL,
 
     INDEX `brand_id`(`brand_id`),
     INDEX `supplier_id`(`supplier_id`),
@@ -118,6 +134,12 @@ ALTER TABLE `role_permissions` ADD CONSTRAINT `role_permissions_ibfk_1` FOREIGN 
 
 -- AddForeignKey
 ALTER TABLE `role_permissions` ADD CONSTRAINT `role_permissions_ibfk_2` FOREIGN KEY (`permission_id`) REFERENCES `permissions`(`id`) ON DELETE RESTRICT ON UPDATE RESTRICT;
+
+-- AddForeignKey
+ALTER TABLE `segment` ADD CONSTRAINT `segment_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user`(`id`) ON DELETE RESTRICT ON UPDATE RESTRICT;
+
+-- AddForeignKey
+ALTER TABLE `segment` ADD CONSTRAINT `segment_ibfk_2` FOREIGN KEY (`voucher_id`) REFERENCES `voucher`(`id`) ON DELETE RESTRICT ON UPDATE RESTRICT;
 
 -- AddForeignKey
 ALTER TABLE `user` ADD CONSTRAINT `user_ibfk_1` FOREIGN KEY (`role_id`) REFERENCES `roles`(`id`) ON DELETE RESTRICT ON UPDATE RESTRICT;
