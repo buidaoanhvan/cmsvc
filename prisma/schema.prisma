@@ -109,7 +109,7 @@ model voucher {
   brand_id       Int?
   supplier_id    Int?
   title          String?   @db.VarChar(255)
-  description    String?   @db.VarChar(255)
+  description    String?   @db.LongText
   image          String?   @db.VarChar(255)
   status         Int?
   discount_value Int?

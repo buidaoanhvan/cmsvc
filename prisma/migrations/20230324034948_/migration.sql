@@ -107,7 +107,7 @@ CREATE TABLE `voucher` (
     `brand_id` INTEGER NULL,
     `supplier_id` INTEGER NULL,
     `title` VARCHAR(255) NULL,
-    `description` VARCHAR(255) NULL,
+    `description` LONGTEXT NULL,
     `image` VARCHAR(255) NULL,
     `status` INTEGER NULL,
     `discount_value` INTEGER NULL,

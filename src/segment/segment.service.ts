@@ -28,7 +28,13 @@ export class SegmentService {
   }
 
   async findAll() {
-    const result = await this.prisma.segment.findMany({});
+    const result = await this.prisma.segment.findMany({
+      include: {
+        voucher: { select: { title: true } },
+        user: { select: { email: true, fullname: true } },
+      },
+      orderBy: { created_at: 'desc' },
+    });
     if (result) {
       return {
         success: true,

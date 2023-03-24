@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   UseGuards,
+  Request,
 } from '@nestjs/common';
 import { SegmentService } from './segment.service';
 import { CreateSegmentDto } from './dto/create-segment.dto';
@@ -21,7 +22,12 @@ export class SegmentController {
   @Post()
   @HasPermissions('P_REGISTER')
   @UseGuards(PermissionsGuard)
-  async create(@Body() createSegmentDto: CreateSegmentDto) {
+  async create(
+    @Body() createSegmentDto: CreateSegmentDto,
+    @Request() req: any,
+  ) {
+    createSegmentDto.user_id = req.user.ui;
+    createSegmentDto.status = 0;
     const result = await this.segmentService.create(createSegmentDto);
     if (result.success) {
       return {
