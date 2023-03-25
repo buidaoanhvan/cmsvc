@@ -2,8 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateCodexDto } from './dto/create-codex.dto';
 import { UpdateCodexDto } from './dto/update-codex.dto';
+import { chunkArr } from '../helper';
 import * as fs from 'fs';
 import * as csv from 'fast-csv';
+import { count } from 'console';
 @Injectable()
 export class CodexService {
   // [x: string]: any;
@@ -112,21 +114,29 @@ export class CodexService {
   }
 
   async import(id: number, file: string) {
-    const csvData = [];
-    await new Promise((resolve, reject) => {
-      fs.createReadStream(file)
-        .pipe(csv.parse({ headers: true }))
-        .on('data', async (row) => {
-          row.voucher_id = id;
-          csvData.push(row);
-        })
-        .on('error', reject)
-        .on('end', resolve);
-    });
-    const countRow = await this.prisma.codex.createMany({
-      data: csvData,
-      skipDuplicates: true,
-    });
-    return countRow;
+    try {
+      const csvData = [];
+      await new Promise((resolve, reject) => {
+        fs.createReadStream(file)
+          .pipe(csv.parse({ headers: true }))
+          .on('data', async (row) => {
+            row.voucher_id = id;
+            csvData.push(row);
+          })
+          .on('error', reject)
+          .on('end', resolve);
+      });
+      const batch = chunkArr(csvData, 20000);
+      const count = batch.map(async (i) => {
+        const countRow = await this.prisma.codex.createMany({
+          data: i,
+          skipDuplicates: true,
+        });
+        return countRow.count;
+      });
+      const results = await Promise.all(count);
+      console.log(results);
+      return results.reduce((a, b) => a + b, 0);
+    } catch (error) {}
   }
 }

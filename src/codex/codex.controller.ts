@@ -18,9 +18,36 @@ import { CreateCodexDto } from './dto/create-codex.dto';
 import { UpdateCodexDto } from './dto/update-codex.dto';
 import { diskStorage } from 'multer';
 import { editFileName } from '../helper/index';
+import { Public } from '../auth/public.decorator';
+import { v4 as uuidv4 } from 'uuid';
+import { createObjectCsvWriter } from 'csv-writer';
+
 @Controller('codex')
 export class CodexController {
   constructor(private readonly codexService: CodexService) {}
+
+  @Public()
+  @Get('render')
+  async render() {
+    console.log(process.cwd());
+    const csvWriter = createObjectCsvWriter({
+      path: process.cwd() + '/abc.csv',
+      header: ['code'],
+    });
+
+    const data = [];
+
+    for (let index = 0; index < 100000; index++) {
+      data.push({ code: uuidv4() });
+    }
+
+    csvWriter
+      .writeRecords(data) // returns a promise
+      .then((output) => {
+        console.log(output);
+        console.log('...Done');
+      });
+  }
 
   @Post()
   @HasPermissions('P_REGISTER')
@@ -103,7 +130,6 @@ export class CodexController {
     }
   }
 
-  // TEST IMPORT 2
   @Post('import/:id')
   @UseInterceptors(
     FileInterceptor('file', {
@@ -121,7 +147,7 @@ export class CodexController {
       const countRow = await this.codexService.import(+id, file.path);
       return {
         statusCode: 200,
-        message: 'thêm thành công ' + countRow.count + ' mã voucher.',
+        message: 'thêm thành công ' + countRow + ' mã voucher.',
       };
     } catch (error) {
       return {

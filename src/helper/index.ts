@@ -16,3 +16,12 @@ export const editFileName = (req, file, callback) => {
     .join('');
   callback(null, `${name}-${randomName}${fileExtName}`);
 };
+
+export const chunkArr = (arr: any, size: number) => {
+  const batch = [];
+  for (let i = 0; i < arr.length; i += size) {
+    const chunk = arr.slice(i, i + size);
+    batch.push(chunk);
+  }
+  return batch;
+};
