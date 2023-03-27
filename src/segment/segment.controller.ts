@@ -7,6 +7,7 @@ import {
   UseGuards,
   Request,
   StreamableFile,
+  Res,
 } from '@nestjs/common';
 import { SegmentService } from './segment.service';
 import { CreateSegmentDto } from './dto/create-segment.dto';
@@ -14,6 +15,8 @@ import { HasPermissions } from 'src/auth/has-permissions.decorator';
 import { PermissionsGuard } from 'src/auth/permissions.guard';
 import { join } from 'path';
 import { createReadStream } from 'fs';
+import { Parser } from '@json2csv/plainjs';
+import type { Response } from 'express';
 @Controller('segment')
 export class SegmentController {
   constructor(private readonly segmentService: SegmentService) {}
@@ -103,13 +106,14 @@ export class SegmentController {
   async getCsv(
     @Param('id') id: string,
     @Request() req: any,
-  ): Promise<StreamableFile> {
+    @Res() res: Response,
+  ) {
     try {
       const result = await this.segmentService.getCsv(+id, req.user.ui);
-      const file = await createReadStream(
-        join(process.cwd(), '/public/csv/codex-3452.csv'),
-      );
-      return new StreamableFile(file);
+      const json2csvParser = new Parser();
+      const csv = json2csvParser.parse(result.data);
+      res.header('Content-Type', 'text/csv');
+      return res.send(csv);
     } catch (error) {
       console.log(error);
     }

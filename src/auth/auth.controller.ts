@@ -33,7 +33,7 @@ export class AuthController {
 
   // @HasPermissions('P_REGISTER')
   // @UseGuards(PermissionsGuard)
-  @Public()
+  // @Public()
   @Post('register')
   async register(
     @Body() registerAuthDto: RegisterAuthDto,
@@ -56,6 +56,23 @@ export class AuthController {
   @Post('user')
   async user(@Req() req: any) {
     const result = await this.authService.user(req.user.id);
+    if (result.success) {
+      return {
+        code: result.code,
+        message: result.message,
+        data: result.data,
+      };
+    } else {
+      return {
+        code: result.code,
+        message: result.message,
+      };
+    }
+  }
+
+  @Post('alluser')
+  async alluser(@Req() req: any) {
+    const result = await this.authService.alluser();
     if (result.success) {
       return {
         code: result.code,

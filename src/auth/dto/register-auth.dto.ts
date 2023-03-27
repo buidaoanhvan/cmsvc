@@ -9,4 +9,6 @@ export class RegisterAuthDto {
   fullname: string;
   @IsNotEmpty()
   phone: string;
+  @IsNotEmpty()
+  role_id: number;
 }

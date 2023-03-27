@@ -99,6 +99,7 @@ export class AuthService {
         };
       }
     } catch (error) {
+      console.log(error);
       return {
         success: false,
         code: 500,
@@ -111,6 +112,32 @@ export class AuthService {
   async user(id: any) {
     const user = await this.prisma.user.findFirst({ where: { id: id } });
     delete user.password;
+    if (user) {
+      return {
+        success: true,
+        code: 200,
+        message: 'Người dùng',
+        data: user,
+      };
+    } else {
+      return {
+        success: false,
+        code: 400,
+        message: 'Không tìm thấy người dùng',
+      };
+    }
+  }
+
+  async alluser() {
+    const user = await this.prisma.user.findMany({
+      select: {
+        id: true,
+        fullname: true,
+        email: true,
+        roles: {},
+      },
+      orderBy: { created_at: 'desc' },
+    });
     if (user) {
       return {
         success: true,
