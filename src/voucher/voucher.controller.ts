@@ -98,4 +98,23 @@ export class VoucherController {
       };
     }
   }
+
+  @Post('findName')
+  async findOneByBrandAndTitle(@Body() body:{brandId: number, title: string}) {
+    const {brandId, title} = body;
+    const result = await this.voucherService.findByBrandAndTitle(brandId, title);
+    if (result.success) {
+      return {
+        statusCode: result.code,
+        message: result.message,
+        data: result.data,
+      };
+    } else {
+      return {
+        statusCode: result.code,
+        message: result.message,
+      };
+    }
+      
+  }
 }

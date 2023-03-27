@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import e from 'express';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateVoucherDto } from './dto/create-voucher.dto';
 import { UpdateVoucherDto } from './dto/update-voucher.dto';
@@ -6,7 +7,7 @@ import { UpdateVoucherDto } from './dto/update-voucher.dto';
 const moment = require('moment-timezone');
 @Injectable()
 export class VoucherService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) { }
 
   async create(createVoucherDto: CreateVoucherDto) {
     try {
@@ -187,4 +188,38 @@ export class VoucherService {
       };
     }
   }
+
+  async findByBrandAndTitle(brandId: number, title: string) {
+    // console.log(brandId, title);
+    const where = {};
+    if (brandId) {
+      where['brand_id'] = brandId;
+    }
+
+    if (title) {
+      where['title'] = { contains: title };
+    }
+    console.log(where);
+    try {
+      const result = await this.prisma.voucher.findMany({
+        where
+      });
+      return {
+        success: true,
+        code: 200,
+        message: 'Tìm voucher thành công!',
+        data: result,
+      };
+    } catch (error) {
+
+      return {
+        success: false,
+        code: 400,
+        message: error
+      };
+
+    }
+  }
+
+
 }
