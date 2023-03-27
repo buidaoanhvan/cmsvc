@@ -19,7 +19,7 @@ export class SupplierController {
   constructor(private readonly supplierService: SupplierService) {}
 
   @Post()
-  @HasPermissions('P_REGISTER')
+  @HasPermissions('C_SUPPLIER')
   @UseGuards(PermissionsGuard)
   async create(@Body() createSupplierDto: CreateSupplierDto) {
     const result = await this.supplierService.create(createSupplierDto);
@@ -38,6 +38,8 @@ export class SupplierController {
   }
 
   @Get()
+  @HasPermissions('R_SUPPLIER')
+  @UseGuards(PermissionsGuard)
   async findAll() {
     const result = await this.supplierService.findAll();
     if (result.success) {
@@ -54,13 +56,8 @@ export class SupplierController {
     }
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.supplierService.findOne(+id);
-  }
-
   @Patch(':id')
-  @HasPermissions('P_REGISTER')
+  @HasPermissions('U_SUPPLIER')
   @UseGuards(PermissionsGuard)
   async update(
     @Param('id') id: number,
@@ -82,7 +79,7 @@ export class SupplierController {
   }
 
   @Delete(':id')
-  @HasPermissions('P_REGISTER')
+  @HasPermissions('D_SUPPLIER')
   @UseGuards(PermissionsGuard)
   async remove(@Param('id') id: number) {
     const result = await this.supplierService.remove(+id);

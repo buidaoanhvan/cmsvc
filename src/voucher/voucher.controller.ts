@@ -19,7 +19,7 @@ export class VoucherController {
   constructor(private readonly voucherService: VoucherService) {}
 
   @Post()
-  @HasPermissions('P_REGISTER')
+  @HasPermissions('C_VOUCHER')
   @UseGuards(PermissionsGuard)
   async create(@Body() createVoucherDto: CreateVoucherDto) {
     const result = await this.voucherService.create(createVoucherDto);
@@ -38,6 +38,8 @@ export class VoucherController {
   }
 
   @Get()
+  @HasPermissions('R_VOUCHER')
+  @UseGuards(PermissionsGuard)
   async findAll() {
     const result = await this.voucherService.findAll();
     if (result.success) {
@@ -54,13 +56,8 @@ export class VoucherController {
     }
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.voucherService.findOne(+id);
-  }
-
   @Patch(':id')
-  @HasPermissions('P_REGISTER')
+  @HasPermissions('U_VOUCHER')
   @UseGuards(PermissionsGuard)
   async update(
     @Param('id') id: number,
@@ -82,7 +79,7 @@ export class VoucherController {
   }
 
   @Delete(':id')
-  @HasPermissions('P_REGISTER')
+  @HasPermissions('D_VOUCHER')
   @UseGuards(PermissionsGuard)
   async remove(@Param('id') id: number) {
     const result = await this.voucherService.remove(+id);

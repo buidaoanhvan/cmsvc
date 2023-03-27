@@ -19,7 +19,7 @@ export class BrandController {
   constructor(private readonly brandService: BrandService) {}
 
   @Post()
-  @HasPermissions('P_REGISTER')
+  @HasPermissions('C_BRAND')
   @UseGuards(PermissionsGuard)
   async create(@Body() createBrandDto: CreateBrandDto) {
     const result = await this.brandService.create(createBrandDto);
@@ -38,6 +38,8 @@ export class BrandController {
   }
 
   @Get()
+  @HasPermissions('R_BRAND')
+  @UseGuards(PermissionsGuard)
   async findAll() {
     const result = await this.brandService.findAll();
     if (result.success) {
@@ -54,13 +56,8 @@ export class BrandController {
     }
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.brandService.findOne(+id);
-  }
-
   @Patch(':id')
-  @HasPermissions('P_REGISTER')
+  @HasPermissions('U_BRAND')
   @UseGuards(PermissionsGuard)
   async update(
     @Param('id') id: number,
@@ -82,7 +79,7 @@ export class BrandController {
   }
 
   @Delete(':id')
-  @HasPermissions('P_REGISTER')
+  @HasPermissions('D_BRAND')
   @UseGuards(PermissionsGuard)
   async remove(@Param('id') id: number) {
     const result = await this.brandService.remove(+id);

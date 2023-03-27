@@ -48,50 +48,67 @@ export class RolePermissionsService {
     }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} rolePermission`;
-  }
-
-  async update(id: number, updateRolePermissionDto: UpdateRolePermissionDto) {
-    const { roleId, listPermission } = updateRolePermissionDto;
-    const result = listPermission.forEach(async (permissionId) => {
-      await this.prisma.role_permissions.update({
-        where: { id },
-        data: {
-          roles: {
-            connect: { id: roleId },
-          },
-          permissions: {
-            connect: { id: permissionId },
-          },
-        },
-      });
-    });
-
-    return {
-      success: true,
-      code: 200,
-      message: 'Sửa Role_Permission thành công!',
-      data: result,
-    };
-  }
-
-  async remove(id: number) {
-    const result = await this.prisma.role_permissions.delete({
-      where: { id },
+  async findOne(id: number) {
+    const result = await this.prisma.role_permissions.findMany({
+      where: { role_id: id },
     });
     if (result) {
       return {
         success: true,
         code: 200,
-        message: 'Xóa role_permissions thành công!',
+        message: 'thành công!',
+        data: result,
       };
     } else {
       return {
         success: false,
         code: 400,
-        message: 'Xóa role_permissions không thành công!',
+        message: 'không thành công!',
       };
     }
   }
+
+  async update(updateRolePermissionDto: UpdateRolePermissionDto) {
+    try {
+      const { roleId, listPermission } = updateRolePermissionDto;
+      await this.prisma.role_permissions.deleteMany({
+        where: { role_id: roleId },
+      });
+      listPermission.forEach(async (i) => {
+        await this.prisma.role_permissions.create({
+          data: { role_id: roleId, permission_id: i },
+        });
+      });
+      return {
+        success: true,
+        code: 200,
+        message: 'Gán quyền thành công!',
+      };
+    } catch (error) {
+      return {
+        success: true,
+        code: 200,
+        message: 'Vui long thử lại sau!',
+      };
+    }
+  }
+
+  // async remove(id: number) {
+  //   const result = await this.prisma.role_permissions.delete({
+  //     where: { id },
+  //   });
+  //   if (result) {
+  //     return {
+  //       success: true,
+  //       code: 200,
+  //       message: 'Xóa role_permissions thành công!',
+  //     };
+  //   } else {
+  //     return {
+  //       success: false,
+  //       code: 400,
+  //       message: 'Xóa role_permissions không thành công!',
+  //     };
+  //   }
+  // }
 }

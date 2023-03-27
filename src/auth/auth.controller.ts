@@ -4,8 +4,8 @@ import { LoginAuthDto } from './dto/login-auth.dto';
 import { RegisterAuthDto } from './dto/register-auth.dto';
 import { ApiResponse } from 'src/interfaces/api-response.interface';
 import { Public } from './public.decorator';
-// import { PermissionsGuard } from './permissions.guard';
-// import { HasPermissions } from './has-permissions.decorator';
+import { PermissionsGuard } from './permissions.guard';
+import { HasPermissions } from './has-permissions.decorator';
 
 @Controller('auth')
 export class AuthController {
@@ -31,10 +31,9 @@ export class AuthController {
     }
   }
 
-  // @HasPermissions('P_REGISTER')
-  // @UseGuards(PermissionsGuard)
-  // @Public()
   @Post('register')
+  @HasPermissions('ADMIN_USER')
+  @UseGuards(PermissionsGuard)
   async register(
     @Body() registerAuthDto: RegisterAuthDto,
   ): Promise<ApiResponse<any>> {
@@ -53,24 +52,28 @@ export class AuthController {
     }
   }
 
-  @Post('user')
-  async user(@Req() req: any) {
-    const result = await this.authService.user(req.user.id);
-    if (result.success) {
-      return {
-        code: result.code,
-        message: result.message,
-        data: result.data,
-      };
-    } else {
-      return {
-        code: result.code,
-        message: result.message,
-      };
-    }
-  }
+  // @Post('user')
+  // @HasPermissions('ADMIN_USER')
+  // @UseGuards(PermissionsGuard)
+  // async user(@Req() req: any) {
+  //   const result = await this.authService.user(req.user.id);
+  //   if (result.success) {
+  //     return {
+  //       code: result.code,
+  //       message: result.message,
+  //       data: result.data,
+  //     };
+  //   } else {
+  //     return {
+  //       code: result.code,
+  //       message: result.message,
+  //     };
+  //   }
+  // }
 
   @Post('alluser')
+  @HasPermissions('ADMIN_USER')
+  @UseGuards(PermissionsGuard)
   async alluser(@Req() req: any) {
     const result = await this.authService.alluser();
     if (result.success) {

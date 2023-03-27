@@ -1,15 +1,13 @@
 import {
   Controller,
-  Get,
   Post,
   Body,
   Patch,
   Param,
-  Delete,
   UseGuards,
 } from '@nestjs/common';
 import { RolePermissionsService } from './role_permissions.service';
-import { CreateRolePermissionDto } from './dto/create-role_permission.dto';
+// import { CreateRolePermissionDto } from './dto/create-role_permission.dto';
 import { UpdateRolePermissionDto } from './dto/update-role_permission.dto';
 import { HasPermissions } from 'src/auth/has-permissions.decorator';
 import { PermissionsGuard } from 'src/auth/permissions.guard';
@@ -20,13 +18,11 @@ export class RolePermissionsController {
     private readonly rolePermissionsService: RolePermissionsService,
   ) {}
 
-  @Post()
-  @HasPermissions('P_REGISTER')
+  @Post('permissions/:id')
+  @HasPermissions('ADMIN_USER')
   @UseGuards(PermissionsGuard)
-  async create(@Body() createRolePermissionDto: CreateRolePermissionDto) {
-    const result = await this.rolePermissionsService.create(
-      createRolePermissionDto,
-    );
+  async findOne(@Param('id') id: string) {
+    const result = await this.rolePermissionsService.findOne(+id);
     if (result.success) {
       return {
         statusCode: result.code,
@@ -41,44 +37,17 @@ export class RolePermissionsController {
     }
   }
 
-  @Get()
-  async findAll() {
-    const result = await this.rolePermissionsService.findAll();
-    if (result.success) {
-      return {
-        statusCode: result.code,
-        message: result.message,
-        data: result.data,
-      };
-    } else {
-      return {
-        statusCode: result.code,
-        message: result.message,
-      };
-    }
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.rolePermissionsService.findOne(+id);
-  }
-
-  @Patch(':id')
-  @HasPermissions('P_REGISTER')
+  @Patch()
+  @HasPermissions('ADMIN_USER')
   @UseGuards(PermissionsGuard)
-  async update(
-    @Param('id') id: string,
-    @Body() updateRolePermissionDto: UpdateRolePermissionDto,
-  ) {
+  async update(@Body() updateRolePermissionDto: UpdateRolePermissionDto) {
     const result = await this.rolePermissionsService.update(
-      +id,
       updateRolePermissionDto,
     );
     if (result.success) {
       return {
         statusCode: result.code,
         message: result.message,
-        data: result.data,
       };
     } else {
       return {
@@ -88,21 +57,61 @@ export class RolePermissionsController {
     }
   }
 
-  @Delete(':id')
-  @HasPermissions('P_REGISTER')
-  @UseGuards(PermissionsGuard)
-  async remove(@Param('id') id: string) {
-    const result = await this.rolePermissionsService.remove(+id);
-    if (result.success) {
-      return {
-        statusCode: result.code,
-        message: result.message,
-      };
-    } else {
-      return {
-        statusCode: result.code,
-        message: result.message,
-      };
-    }
-  }
+  // @Post()
+  // @HasPermissions('ADMIN_USER')
+  // @UseGuards(PermissionsGuard)
+  // async create(@Body() createRolePermissionDto: CreateRolePermissionDto) {
+  //   const result = await this.rolePermissionsService.create(
+  //     createRolePermissionDto,
+  //   );
+  //   if (result.success) {
+  //     return {
+  //       statusCode: result.code,
+  //       message: result.message,
+  //       data: result.data,
+  //     };
+  //   } else {
+  //     return {
+  //       statusCode: result.code,
+  //       message: result.message,
+  //     };
+  //   }
+  // }
+
+  // @Get()
+  // @HasPermissions('ADMIN_USER')
+  // @UseGuards(PermissionsGuard)
+  // async findAll() {
+  //   const result = await this.rolePermissionsService.findAll();
+  //   if (result.success) {
+  //     return {
+  //       statusCode: result.code,
+  //       message: result.message,
+  //       data: result.data,
+  //     };
+  //   } else {
+  //     return {
+  //       statusCode: result.code,
+  //       message: result.message,
+  //     };
+  //   }
+  // }
+
+  // @Delete(':id')
+  // @HasPermissions('ADMIN_USER')
+  // @UseGuards(PermissionsGuard)
+  // async remove(@Param('id') id: string) {
+  //   const result = await this.rolePermissionsService.remove(+id);
+  //   if (result.success) {
+  //     return {
+  //       statusCode: result.code,
+  //       message: result.message,
+  //     };
+  //   } else {
+  //     return {
+  //       statusCode: result.code,
+  //       message: result.message,
+  //     };
+  //   }
+  // }
 }
