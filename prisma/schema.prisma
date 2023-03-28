@@ -1,5 +1,8 @@
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["filteredRelationCount",   "clientExtensions"]
+
+  
 }
 
 datasource db {
@@ -63,7 +66,7 @@ model roles {
 model segment {
   id         Int       @id @default(autoincrement())
   name       String?   @db.VarChar(255)
-  amount     Int?   
+  amount     Int?
   status     Int?
   user_id    Int?
   voucher_id Int?

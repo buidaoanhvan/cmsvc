@@ -78,7 +78,15 @@ export class VoucherService {
   }
 
   async findAll() {
-    const result = await this.prisma.voucher.findMany();
+    const result = await this.prisma.voucher.findMany({
+      include: {
+        _count: {
+          select: {
+            codex: { where: { segment_id: null } },
+          },
+        },
+      },
+    });
     if (result) {
       return {
         success: true,
