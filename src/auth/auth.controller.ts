@@ -33,8 +33,8 @@ export class AuthController {
 
   @Public()
   @Post('register')
-  @HasPermissions('ADMIN_USER')
-  @UseGuards(PermissionsGuard)
+  // @HasPermissions('ADMIN_USER')
+  // @UseGuards(PermissionsGuard)
   async register(
     @Body() registerAuthDto: RegisterAuthDto,
   ): Promise<ApiResponse<any>> {
