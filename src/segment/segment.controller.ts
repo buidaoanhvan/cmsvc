@@ -106,8 +106,8 @@ export class SegmentController {
   }
 
   @Get('csv/:id')
-  @Post('deny/:id')
   @HasPermissions('F_SEGMENT')
+  @UseGuards(PermissionsGuard)
   async getCsv(
     @Param('id') id: string,
     @Request() req: any,
@@ -115,10 +115,17 @@ export class SegmentController {
   ) {
     try {
       const result = await this.segmentService.getCsv(+id, req.user.ui);
-      const json2csvParser = new Parser();
-      const csv = json2csvParser.parse(result.data);
-      res.header('Content-Type', 'text/csv');
-      return res.send(csv);
+      if (result.success) {
+        const json2csvParser = new Parser();
+        const csv = json2csvParser.parse(result.data);
+        res.header('Content-Type', 'text/csv');
+        return res.send(csv);
+      } else {
+        return res.send({
+          statusCode: result.code,
+          message: result.message,
+        });
+      }
     } catch (error) {
       console.log(error);
     }

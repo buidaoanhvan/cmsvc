@@ -69,11 +69,17 @@ export class SegmentService {
         code: 400,
         message: 'Yêu cầu bị từ chối!',
       };
-    } else {
+    } else if (result.status == 3) {
       return {
         success: false,
         code: 400,
         message: 'Yêu cầu chưa được duyệt!',
+      };
+    } else {
+      return {
+        success: false,
+        code: 400,
+        message: 'Bạn không được phép tải file này!',
       };
     }
   }
