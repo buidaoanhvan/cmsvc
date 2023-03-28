@@ -126,7 +126,7 @@ export class CodexService {
           .on('error', reject)
           .on('end', resolve);
       });
-      const batch = chunkArr(csvData, 20000);
+      const batch = chunkArr(csvData, 5000);
       const count = batch.map(async (i) => {
         const countRow = await this.prisma.codex.createMany({
           data: i,
