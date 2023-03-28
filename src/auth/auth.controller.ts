@@ -31,6 +31,7 @@ export class AuthController {
     }
   }
 
+  @Public()
   @Post('register')
   @HasPermissions('ADMIN_USER')
   @UseGuards(PermissionsGuard)
